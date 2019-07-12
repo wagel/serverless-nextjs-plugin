@@ -1,5 +1,5 @@
 {
-  "name": "serverless-nextjs-monorepo",
+  "name": "serverless-nextjs-plugin",
   "version": "1.8.1",
   "description": "Collection of packages to deploy nextjs applications to AWS Api Gateway & Lambda",
   "main": "index.js",
