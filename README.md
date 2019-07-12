@@ -10,7 +10,7 @@ A [serverless framework](https://serverless.com/) plugin to deploy nextjs apps.
 
 The plugin targets [Next 8 serverless mode](https://nextjs.org/blog/next-8/#serverless-nextjs)
 
-![demo](./demo.gif)
+![demo](../../demo.gif)
 
 ## Contents
 
@@ -19,6 +19,7 @@ The plugin targets [Next 8 serverless mode](https://nextjs.org/blog/next-8/#serv
 - [Hosting static assets](#hosting-static-assets)
 - [Serving static assets](#serving-static-assets)
 - [Deploying](#deploying)
+- [Deploying a single page](#deploying-a-single-page)
 - [Overriding page configuration](#overriding-page-configuration)
 - [Custom page routing](#custom-page-routing)
 - [Custom error page](#custom-error-page)
@@ -151,33 +152,6 @@ By doing this, a CloudFront distribution will be created in front of your next a
 
 Note that deploying the stack for the first time will take considerably longer, as CloudFront takes time propagating the changes, typically 10 - 20mins.
 
-You can provide your own configuration for the CloudFront distribution:
-
-```yml
-# serverless.yml
-plugins:
-  - serverless-nextjs-plugin
-
-custom:
-  serverless-nextjs:
-    assetsBucketName: "your-bucket-name"
-    cloudFront: ${file(cloudfront-override.yml)}
-```
-
-```yml
-# cloudfront-override.yml
-# e.g. add custom domain name
-Properties:
-  DistributionConfig:
-    Aliases:
-      - my.alias.com
-    ViewerCertificate:
-      AcmCertificateArn: arn:aws:acm:xxxx
-      ...
-```
-
-The configuration provided will be merged onto the defaults in `packages/serverless-nextjs-plugin/resources/cloudfront.yml`.
-
 ## Deploying
 
 `serverless deploy`
@@ -195,6 +169,20 @@ events:
   - http:
       path: pageName # home, about, etc. Unless is the index page which is served at /
       method: head
+```
+
+## Deploying a single page
+
+If you need to deploy just one of your pages, simply run:
+
+```console
+serverless deploy function --function pageFunctionName
+```
+
+where `pageFunctionName` will be the page file name + `"Page"`. For example, to deploy `pages/home.js`, you can run:
+
+```console
+serverless deploy function --function homePage
 ```
 
 ## Overriding page configuration
@@ -345,14 +333,14 @@ module.exports = page => {
 
 ## All plugin configuration options
 
-| Plugin config key | Type               | Default Value | Description                                                                                                                                                                                                                   |
-| ----------------- | ------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| nextConfigDir     | `string`           | ./            | Path to parent directory of `next.config.js`.                                                                                                                                                                                 |
-| assetsBucketName  | `string`           | \<empty\>     | Creates an S3 bucket with the name provided. The bucket will be used for uploading next static assets.                                                                                                                        |
-| cloudFront        | `bool` \| `object` | false         | Set to `true` to create a cloud front distribution in front of your nextjs application. Also can be set to an `object` if you need to override CloudFront configuration, see [serving static assets](#serving-static-assets). |
-| routes            | `[]object`         | []            | Array of custom routes for the next pages.                                                                                                                                                                                    |
-| customHandler     | `string`           | \<empty\>     | Path to your own lambda handler.                                                                                                                                                                                              |
-| uploadBuildAssets | `bool`             | true          | In the unlikely event that you only want to upload `static` or `public` dirs, set this to `false`.                                                                                                                            |
+| Plugin config key | Default Value | Description                                                                                            |
+| ----------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| nextConfigDir     | ./            | Path to parent directory of `next.config.js`.                                                          |
+| assetsBucketName  | \<empty\>     | Creates an S3 bucket with the name provided. The bucket will be used for uploading next static assets. |
+| cloudFront        | false         | Set to true to create a cloud front distribution in front of your nextjs application.                  |
+| routes            | []            | Array of custom routes for the next pages.                                                             |
+| customHandler     | \<empty\>     | Path to your own lambda handler.                                                                       |
+| uploadBuildAssets | true          | In the unlikely event that you only want to upload `static` or `public` dirs, set this to `false`.     |
 
 ## Caveats
 
