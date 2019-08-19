@@ -30,7 +30,10 @@ const getUploadParameters = (bucket, filePath, truncate, rootPrefix) => {
     Bucket: bucket,
     Key: key,
     ContentType: mime.getType(key),
-    Body: fse.createReadStream(filePath)
+    Body: fse.createReadStream(filePath),
+    Metadata: {
+      "Cache-Control": "public, max-age=31557600"
+    }
   };
 };
 
