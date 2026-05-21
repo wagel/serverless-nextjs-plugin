@@ -1,3 +1,9 @@
+This repository is no longer maintained.
+
+Archived on: 2026-05-21
+
+Owner: Frontend Team
+
 # Serverless Nextjs Plugin
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
